@@ -1,0 +1,182 @@
+<!DOCTYPE htnl>
+<html>
+	<title>Game</title>
+	<body>
+		<canvas id = "game" width = "600" height = "600"></canvas>
+		<style type="text/css">
+			#game{
+				background-color: rgb(215, 215, 215);
+			}
+		</style>
+		<script type="text/javascript">
+			var x=10,y=10,o=0,u,s=[],level=[]; 
+			var c = document.getElementById("game");
+			var gx = c.getContext("2d");
+			gx.fillStyle = "red";
+			gx.strokeStyle = "blue";
+			gx.fillRect(x, y, 30, 30);
+			maze1();
+			function disp1(){
+					x+=1;
+					collide();
+					if(x-u == 20 || x==0 || y==0||crash||x==570||y==570){
+						clearInterval(b);
+						x-=1;
+						return;
+					}
+					gx.clearRect(0, 0, c.width, c.height);
+					disp();
+					temp();
+					o=1;
+				}
+				function disp2(){									x-=1;
+					collide();
+					if(x-u == -20 || x==0 || y==0||crash||x==570||y==570){
+						clearInterval(b);
+						x+=1;
+						return;
+					}
+					gx.clearRect(0, 0, c.width, c.height);
+					disp();
+					temp();
+					o=1;
+				}
+				function disp3(){
+					y-=1;
+					collide();
+					if(y-u == -20 || x==0 || y==0||crash||x==570||y==570){
+						clearInterval(b);
+						y+=1;
+						return;
+					}
+					gx.clearRect(0, 0, c.width, c.height);
+					temp();
+					disp();
+					o=1;
+				}
+				function disp4(){
+					y+=1;
+					collide();
+					if(y-u == 20 || x==0 || y==0||crash||x==570||y==570){
+						clearInterval(b);
+						y-=1;
+						return;
+					}
+					gx.clearRect(0, 0, c.width, c.height);
+					temp();
+					disp();
+					o=1;
+				}
+				document.onkeydown = function(v){
+				if(v.keyCode == 39 && !o){
+					u=x;
+					b = setInterval(disp1, 10);
+				}
+				else if(v.keyCode == 37 && !o)
+				{
+					u=x;
+					b = setInterval(disp2, 10);
+				}
+				else if(v.keyCode == 38 && !o){
+					u=y;
+					b = setInterval(disp3, 10);
+				}
+				else if(v.keyCode == 40 && !o){
+					u=y;
+					b = setInterval(disp4, 10);
+				}
+				o=0;
+			}
+			function temp(){
+				gx.fillStyle = "red";
+				gx.fillRect(x, y, 30, 30);
+			}
+			function coordinates(x1, y1, x2, y2){
+				this.x1=x1;
+				this.y1=y1;
+				this.x2=x2;
+				this.y2=y2;
+			}
+			/* Generating random maze
+			function maze(){
+				var i,j;
+				for(i=60; i<=600; i+=60){
+					for(j=60; j<=600; j+=60){
+					if(Math.floor(Math.random()*5)){
+					gx.beginPath();
+					gx.moveTo(i, j-60);
+					gx.lineTo(i, j);
+					gx.stroke();
+				}
+				}
+				}
+				for(var i=60; i<=600; i+=60){
+					for(j=60; j<=600; j+=60){
+					if(Math.floor(Math.random()*5)){
+					gx.beginPath();
+					gx.moveTo(j-60, i);
+					gx.lineTo(j, i);
+					gx.stroke();
+				}
+				}
+				}
+			}*/
+			//Level-1
+			function maze1(){
+				var i,j;
+				for(i=60; i<=600; i+=60){
+					for(j=60; j<=600; j+=60){
+					if(i!=j && i!=600){
+					gx.beginPath();
+					gx.moveTo(i, j-60);
+					gx.lineTo(i, j);
+					gx.stroke();
+					s.push(new coordinates(i, j-60, i, j));
+				}
+					if(i==600 && i!=j){
+						gx.beginPath();
+						gx.moveTo(595, j-60);
+						gx.lineTo(595, j);
+						gx.stroke();
+						s.push(new coordinates(595, j-60, 595, j));
+					}
+				}
+				}
+			}
+			var crash = false;
+			function collision(obj){
+        	if (!(((y+30) < obj.y1) || (y > obj.y2) || ((x+30) < obj.x1) || (x > obj.x2))) {
+        			crash = true;
+        	}
+    		}
+    		function collide(){
+    			crash = false;
+    			for(var d=0; d<s.length; d++){
+    				collision(s[d]);
+    			}
+    		}
+    		function disp(){
+    			var i;
+				for(i=0; i<s.length; i++){
+					gx.beginPath();
+					gx.moveTo(s[i].x1, s[i].y1);
+					gx.lineTo(s[i].x2, s[i].y2);
+					gx.stroke();
+    			}
+    		}
+    		var t=60,pq;
+    		function deadtime(){
+   				var k = document.getElementById("time");
+   				k.value = t;
+    			if(!t){
+    				clearInterval(pq);
+    			}
+    			t--;
+    		}
+		</script>
+		<br>
+		<input type = "button" onClick = "pq = setInterval(deadtime, 1000)" value = "Start"><br><br>
+		<input type = "button" value = "Time Left : ">
+		<input type = "text" id = "time">
+	</body>
+</html>
